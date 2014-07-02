@@ -64,7 +64,9 @@ PRODUCT_COPY_FILES += \
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8974 \
-    libloc_core
+    libgps.utils \
+    libloc_core \
+    libloc_eng
 
 
 #    libgps.utils
