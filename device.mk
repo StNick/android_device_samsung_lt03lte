@@ -114,9 +114,7 @@ PRODUCT_PACKAGES += \
     macloader \
     crda \
     regulatory.bin \
-    linville.key.pub.pem \
-    wcnss_service \
-    libwcnss_qmi
+    linville.key.pub.pem
 
 # libxml2 is needed for camera
 PRODUCT_PACKAGES += libxml2
