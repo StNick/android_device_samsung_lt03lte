@@ -23,3 +23,6 @@ qcom.hw.aac.encoder=true
 
 # System property for number of mQANElements
 ro.ril.telephony.mqanelements=6
+
+# Enable multi user support
+fw.max_users=4

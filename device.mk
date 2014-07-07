@@ -19,12 +19,15 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 ## Get non-open-source specific aspects
 $(call inherit-product-if-exists, vendor/samsung/lt03lte/lt03lte-vendor.mk)
 
+## We are a tablet, not a phone
+PRODUCT_CHARACTERISTICS := tablet
+
 ## overlays
 DEVICE_PACKAGE_OVERLAYS += device/samsung/lt03lte/overlay
 
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi xxhdpi
-PRODUCT_AAPT_PREF_CONFIG := xhdpi
+PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 # Boot animation
 TARGET_SCREEN_HEIGHT := 1600
@@ -64,9 +67,7 @@ PRODUCT_COPY_FILES += \
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8974 \
-    libgps.utils \
-    libloc_core \
-    libloc_eng
+    libloc_core
 
 
 #    libgps.utils
@@ -113,7 +114,9 @@ PRODUCT_PACKAGES += \
     macloader \
     crda \
     regulatory.bin \
-    linville.key.pub.pem
+    linville.key.pub.pem \
+    wcnss_service \
+    libwcnss_qmi
 
 # libxml2 is needed for camera
 PRODUCT_PACKAGES += libxml2
@@ -183,7 +186,7 @@ PRODUCT_PACKAGES += \
 $(call inherit-product, device/samsung/msm8974-common/msm8974.mk)
 
 # call dalvik heap config
-$(call inherit-product, frameworks/native/build/phone-xxhdpi-2048-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/tablet-7in-xhdpi-2048-dalvik-heap.mk)
 
 # call hwui memory config
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
