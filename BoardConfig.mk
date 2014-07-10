@@ -20,19 +20,20 @@
 # definition file).
 #
 
-# inherit from common msm8974
+TARGET_MSM8974_COMMON_WLAN_VARIANT := prima
+
 -include device/samsung/msm8974-common/BoardConfigCommon.mk
 
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/lt03lte/include
 
 
-# Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := MSM8974
 
 # Kernel Configs
 TARGET_KERNEL_SOURCE := kernel/samsung/lt03lte
 TARGET_KERNEL_CONFIG := msm8974_sec_defconfig
 TARGET_KERNEL_SELINUX_CONFIG := selinux_defconfig
+TARGET_KERNEL_VARIANT_CONFIG := msm8974_sec_lt03eur_defconfig
 
 # Kernel
 BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3
@@ -49,6 +50,7 @@ BOARD_CUSTOM_BOOTIMG_MK := device/samsung/lt03lte/mkbootimg.mk
 BOARD_EGL_CFG := device/samsung/lt03lte/egl.cfg
 
 # Recovery
+COMMON_GLOBAL_CFLAGS += -DNO_SECURE_DISCARD
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS := true
@@ -56,6 +58,7 @@ BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := device/samsung/lt03lte/rootdir/etc/fstab.qcom
+BOARD_RECOVERY_SWIPE := true
 
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 11534336
@@ -64,12 +67,8 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2506096640
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 12828261888
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-BOARD_RECOVERY_SWIPE := true
-
-# bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/lt03lte/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := device/samsung/lt03lte/bluetooth/vnd_lt03lte.txt
-BOARD_BLUETOOTH_USES_HCIATTACH_PROPERTY := false
+# WLAN: Use qmi-client interface to load the correct MAC address
+TARGET_USES_QCOM_WCNSS_QMI := true
 
 # Samsung's nonstandard csd-client
 BOARD_HAVE_NEW_QCOM_CSDCLIENT := true
@@ -87,11 +86,13 @@ AUDIO_FEATURE_DISABLED_ANC_HEADSET := true
 # Build lights
 TARGET_PROVIDES_LIBLIGHT := true
 
+# IR
+TARGET_PROVIDES_CONSUMERIR_HAL := true
+
 # Time services
 BOARD_USES_QC_TIME_SERVICES := true
 
 # Display
-#NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 OVERRIDE_RS_DRIVER:= libRSDriver_adreno.so
 TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
 
@@ -105,17 +106,13 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 # of the device.
 MAX_EGL_CACHE_SIZE := 2048*1024
 
-# Assert
-TARGET_OTA_ASSERT_DEVICE := lt03lte,lt03ltexx
-
-TARGET_KERNEL_VARIANT_CONFIG := msm8974_sec_lt03eur_defconfig
 
 # PowerHAL
-TARGET_POWERHAL_VARIANT := qcom
+#TARGET_POWERHAL_VARIANT := qcom
 TARGET_POWERHAL_SET_INTERACTIVE_EXT := device/samsung/lt03lte/power/power_ext.c
 
-# Consumerir
-TARGET_PROVIDES_CONSUMERIR_HAL := true
+# The "new" GPS is really the old GPS, override it.
+BOARD_HAVE_NEW_QC_GPS :=
 
 # We don't use old-ass RPC
 TARGET_NO_RPC := true
@@ -125,4 +122,5 @@ TARGET_UNIFIED_DEVICE := true
 TARGET_INIT_VENDOR_LIB := libinit_msm
 TARGET_LIBINIT_DEFINES_FILE := device/samsung/lt03lte/init/init_lt03lte.c
 
-TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/lt03lte
+# Assert
+TARGET_OTA_ASSERT_DEVICE := lt03lte,lt03ltexx

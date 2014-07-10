@@ -23,7 +23,7 @@ $(call inherit-product-if-exists, vendor/samsung/lt03lte/lt03lte-vendor.mk)
 PRODUCT_CHARACTERISTICS := tablet
 
 ## overlays
-DEVICE_PACKAGE_OVERLAYS += device/samsung/lt03lte/overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi xxhdpi
@@ -35,9 +35,9 @@ TARGET_SCREEN_WIDTH := 2560
 
 # Audio configuration
 PRODUCT_COPY_FILES += \
-    device/samsung/lt03lte/audio/audio_effects.conf:system/vendor/etc/audio_effects.conf \
-    device/samsung/lt03lte/audio/mixer_paths.xml:system/etc/mixer_paths.xml \
-    device/samsung/lt03lte/audio/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/audio/audio_effects.conf:system/etc/audio_effects.conf \
+    $(LOCAL_PATH)/audio/mixer_paths.xml:system/etc/mixer_paths.xml \
+    $(LOCAL_PATH)/audio/audio_policy.conf:system/etc/audio_policy.conf \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml
 
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -52,7 +52,7 @@ PRODUCT_COPY_FILES += \
 
 # Media Profile
 PRODUCT_COPY_FILES += \
-    device/samsung/lt03lte/media/media_profiles.xml:system/etc/media_profiles.xml
+    $(LOCAL_PATH)/media/media_profiles.xml:system/etc/media_profiles.xml
 
 # Extended media support
 PRODUCT_PACKAGES += \
@@ -62,28 +62,37 @@ PRODUCT_BOOT_JARS += qcmediaplayer
 
 # support for epen
 PRODUCT_COPY_FILES += \
-    device/samsung/lt03lte/sec_e-pen.idc:system/usr/idc/sec_e-pen.idc
+    $(LOCAL_PATH)/sec_e-pen.idc:system/usr/idc/sec_e-pen.idc
 
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8974 \
-    libloc_core
+    libgps.utils \
+    libloc_core \
+    libloc_eng
 
-
-#    libgps.utils
-#    libloc_eng
-
-GPS_CONF := device/samsung/lt03lte/gps/etc/gps.conf
+GPS_CONF := $(LOCAL_PATH)/gps/etc/gps.conf
 
 PRODUCT_COPY_FILES += \
-    device/samsung/lt03lte/gps/etc/gps.conf:/system/etc/gps.conf \
-    device/samsung/lt03lte/gps/etc/sap.conf:/system/etc/sap.conf
+    $(GPS_CONF):/system/etc/gps.conf \
+    $(LOCAL_PATH)/gps/etc/sap.conf:/system/etc/sap.conf
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
-    device/samsung/lt03lte/keylayout/atmel_mxt_ts.kl:system/usr/keylayout/atmel_mxt_ts.kl \
-    device/samsung/lt03lte/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
-    device/samsung/lt03lte/keylayout/synaptics_rmi4_i2c.kl:system/usr/keylayout/synaptics_rmi4_i2c.kl
+    $(LOCAL_PATH)/keylayout/atmel_mxt_ts.kl:system/usr/keylayout/atmel_mxt_ts.kl \
+    $(LOCAL_PATH)/keylayout/Button_Jack.kl:system/usr/keylayout/Button_Jack.kl \
+    $(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
+    $(LOCAL_PATH)/keylayout/philips_remote_ir.kl:system/usr/keylayout/philips_remote_ir.kl \
+    $(LOCAL_PATH)/keylayout/samsung_remote_ir.kl:system/usr/keylayout/samsung_remote_ir.kl \
+    $(LOCAL_PATH)/keylayout/sec_touchscreen.kl:system/usr/keylayout/sec_touchscreen.kl \
+    $(LOCAL_PATH)/keylayout/ue_rf4ce_remote.kl:system/usr/keylayout/ue_rf4ce_remote.kl
+
+# NFC doesn't exist
+
+PRODUCT_COPY_FILES_OVERRIDES += \
+   system/etc/permissions/com.android.nfc_extras.xml \
+   system/etc/permissions/android.hardware.nfc.xml \
+   system/etc/permissions/android.hardware.nfc.hce.xml
 
 # Ramdisk
 PRODUCT_PACKAGES += \
@@ -98,31 +107,51 @@ PRODUCT_PACKAGES += \
     init.target.rc \
     ueventd.qcom.rc
 
+# HAL
+PRODUCT_PACKAGES += \
+    copybit.msm8974 \
+    gralloc.msm8974 \
+    hwcomposer.msm8974 \
+    memtrack.msm8974 \
+    power.msm8974
+
 # Audio
 PRODUCT_PACKAGES += \
     audiod \
+    audio.a2dp.default \
+    audio_policy.msm8974 \
+    audio.primary.msm8974 \
+    audio.r_submix.default \
+    audio.usb.default \
+    libaudio-resampler \
     libqcomvisualizer \
     libqcomvoiceprocessing \
     tinymix
 
-# Torch
-PRODUCT_PACKAGES += Torch
-
 # Wifi
 PRODUCT_PACKAGES += \
-    libnetcmdiface \
     macloader \
     crda \
     regulatory.bin \
-    linville.key.pub.pem
+    linville.key.pub.pem \
+    wcnss_service \
+    libwcnss_qmi
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:system/etc/wifi/WCNSS_qcom_cfg.ini \
+    $(LOCAL_PATH)/wifi/WCNSS_cfg.dat:system/etc/firmware/wlan/prima/WCNSS_cfg.dat \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_wlan_nv.bin:system/etc/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
 
 # libxml2 is needed for camera
 PRODUCT_PACKAGES += libxml2
 
+# Camera Wrapper
+PRODUCT_PACKAGES += \
+    camera.msm8974
+
 # IR packages
 PRODUCT_PACKAGES += \
     consumerir.msm8974
-
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.consumerir.xml:system/etc/permissions/android.hardware.consumerir.xml
 
@@ -151,7 +180,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ril.subscription.types=NV,RUIM \
     ro.ril.hsxpa=1 \
     ro.ril.gprsclass=10 \
-    ro.use_data_netmgrd=true \
+    ro.use_data_netmgrd=false \
     persist.data.netmgrd.qos.enable=true \
     persist.radio.add_power_save=1 \
     persist.radio.apm_sim_not_pwdn=1 \
@@ -173,8 +202,8 @@ PRODUCT_PACKAGES += \
 
 # Wifi
 PRODUCT_COPY_FILES += \
-   device/samsung/lt03lte/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
-   device/samsung/lt03lte/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
+   $(LOCAL_PATH)/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
+   $(LOCAL_PATH)/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
 
 # Keymaster
 PRODUCT_PACKAGES += \

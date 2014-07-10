@@ -114,6 +114,12 @@ static int close_lights(struct light_device_t *dev)
     return 0;
 }
 
+static int set_light_leds_noop(struct light_device_t *dev,
+            struct light_state_t const *state)
+{
+    return 0;
+}
+
 static int open_lights(const struct hw_module_t *module, char const *name,
                         struct hw_device_t **device)
 {
@@ -124,6 +130,12 @@ static int open_lights(const struct hw_module_t *module, char const *name,
         set_light = set_light_backlight;
     else if (0 == strcmp(LIGHT_ID_BUTTONS, name))
         set_light = set_light_buttons;
+    else if (0 == strcmp(LIGHT_ID_BATTERY, name))
+        set_light = set_light_leds_noop;
+    else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name))
+        set_light = set_light_leds_noop;
+    else if (0 == strcmp(LIGHT_ID_ATTENTION, name))
+        set_light = set_light_leds_noop;
     else
         return -EINVAL;
 
@@ -152,7 +164,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_major = 1,
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
-    .name = "D2 Lights Module",
+    .name = "Mondrianwifi Lights Module",
     .author = "The CyanogenMod Project",
     .methods = &lights_module_methods,
 };
